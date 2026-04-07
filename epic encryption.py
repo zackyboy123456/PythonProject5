@@ -71,9 +71,9 @@ if __name__ == '__main__':
     print(encrypted_data2)
 # :) Implement PKCS#7 padding and unpadding.
 # :)Implement AES-ECB block encryption/decryption using the library primitive.
-# Build your own ECB mode on top of that.
-# Build your own CBC mode on top of that.
-# Encrypt a BMP image with ECB and CBC, preserving the header.
+# :)Build your own ECB
+# :)Build your own CBC
+# :)Encrypt a BMP image with ECB and CBC, preserving the header.
 # Write submit() and verify().
 # Perform the CBC bit-flipping attack.
 # Run openssl speed RSA and openssl speed AES.
