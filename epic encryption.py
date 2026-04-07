@@ -42,7 +42,13 @@ def CBC(data: bytes, key, iv):
     for i in range(0, len(data), 16):
         block = data[i:i + 16]
 
-        xored = bytes(a ^ b for a, b in zip(block, prev))
+        xored = bytearray()
+
+        for i in range(16):
+            xored.append(block[i] ^ prev[i])
+
+        xored = bytes(xored)
+
         encrypted = encrypt_block(xored, key)
 
         res += encrypted
