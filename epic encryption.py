@@ -56,25 +56,71 @@ def CBC(data: bytes, key, iv):
 
     return bytes(res)
 
+def DECBC(data: bytes,key,iv):
+    res = bytearray()
+    prev = iv
+
+    for i in range(0,len(data),16):
+        block = data[i:i + 16]
+        decrpted = decrypt_block(block,key)
+        xored = bytearray()
+        for j in range(16):
+            xored.append(decrpted[j] ^ prev[j])
+
+        res += xored
+        prev = block
+
+    return bytes(res)
+
+
+
+def submit(str,key,iv):
+    strs = str.replace(";", "%3B").replace("=", "%3D")
+    msg = ("userid=456;userdata=" + strs + ";session-id=31337").encode()
+    return CBC(msg, key, iv)
+
+
+def verify(txt,key,iv):
+    plaintext = DECBC(txt, key, iv)
+    try:
+        plaintext = unpad(plaintext)
+    except:
+        return False
+
+    return b";admin=true;" in plaintext
+
 if __name__ == '__main__':
     key = b"epic sauses12345"   # 16 bytes
     iv = get_random_bytes(16)
+    lel = bytearray(submit("A"*24, key, iv))
+    print(lel)
+    block = 16
+    target = b";admin=true;"
+    for i in range(len(target)):
+        lel[block +i] ^= ord('A') ^ target[i]
+    cool =verify(bytes(lel),key,iv)
+    print(cool)
+    print(unpad(DECBC(lel,key,iv)))
 
-    with open("cp-logo.bmp", "rb") as file:
-        binary_data = file.read()
-        header = binary_data[:54]
-        data = binary_data[54:]
+    # with open("cp-logo.bmp", "rb") as file:
+    #     binary_data = file.read()
+    #     header = binary_data[:54]
+    #     data = binary_data[54:]
+    #
+    # encrypted_data1 = ECB(data, key)
+    # encrypted_data2 =CBC(data,key,iv)
+    #
+    # with open("output2.bmp", "wb") as f:
+    #     f.write(header + encrypted_data2)
+    #
+    # with open("output1.bmp", "wb") as f:
+    #     f.write(header + encrypted_data1)
+    #
+    # print(encrypted_data2)
 
-    encrypted_data1 = ECB(data, key)
-    encrypted_data2 =CBC(data,key,iv)
 
-    with open("output2.bmp", "wb") as f:
-        f.write(header + encrypted_data2)
 
-    with open("output1.bmp", "wb") as f:
-        f.write(header + encrypted_data1)
 
-    print(encrypted_data2)
 # :) Implement PKCS#7 padding and unpadding.
 # :)Implement AES-ECB block encryption/decryption using the library primitive.
 # :)Build your own ECB
